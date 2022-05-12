@@ -3,17 +3,5 @@
 	<groupId>com.douzone</groupId>
 	<artifactId>mariadb-practices</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	
-	<packaging>jar</packaging>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.build.outputEncoding>UTF-8</project.build.outputEncoding>
-		<maven.compiler.source>11</maven.compiler.source>
-		<maven.compiler.target>11</maven.compiler.target>
-	</properties>
-
-	<build>
-		<finalName>mariadb-practices</finalName>
-	</build>
+	<packaging>pom</packaging>
 </project>
