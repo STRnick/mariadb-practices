@@ -37,25 +37,25 @@ where to_date = '9999-01-01';
 
 -- 문제7.
 -- 전체 부서를 출력하려고 합니다. 순서는 부서이름이 긴 순서대로 출력해 보세요.
-select *
+select dept_name as 부서이름
 from departments
 group by char_length(dept_name) desc;
 
 -- 문제8.
 -- 현재 급여가 120,000이상 받는 사원은 몇 명이나 있습니까?
-select count(emp_no)
+select count(emp_no) as 부자들
 from salaries
 where salary >= '120000' and to_date = '9999-01-01';
 
 -- 문제9.
 -- 어떤 직책들이 있나요? 중복 없이 이름이 긴 순서대로 출력해 보세요.
-select distinct title
+select distinct title as 직책명
 from titles
 order by char_length(title) desc;
 
 -- 문제10
 -- 현재 Enginner 직책의 사원은 총 몇 명입니까?
-select count(emp_no)
+select count(emp_no) as 현직_엔지니어_수
 from titles
 where title = 'Engineer' and to_date = '9999-01-01';
 
