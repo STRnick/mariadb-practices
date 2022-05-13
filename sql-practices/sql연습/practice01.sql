@@ -14,9 +14,9 @@ order by hire_date asc;
 
 -- 문제3.
 -- 여직원과 남직원은 각 각 몇 명이나 있나요?
-select count(case when gender='M' then 1 end) as '남직원 수',
-count(case when gender='F' then 1 end) as '여직원 수'
-from employees;
+select if(gender = 'M', '남자', '여자') as '성별', count(*) as '직원 수'
+from employees
+group by gender;
 
 -- 문제4.
 -- 현재 근무하고 있는 직원 수는 몇 명입니까? (salaries 테이블을 사용합니다.) 
@@ -39,7 +39,7 @@ where to_date = '9999-01-01';
 -- 전체 부서를 출력하려고 합니다. 순서는 부서이름이 긴 순서대로 출력해 보세요.
 select dept_name as '부서이름'
 from departments
-group by char_length(dept_name) desc;
+group by length(dept_name) desc;
 
 -- 문제8.
 -- 현재 급여가 120,000이상 받는 사원은 몇 명이나 있습니까?
