@@ -14,8 +14,8 @@ order by hire_date asc;
 
 -- 문제3.
 -- 여직원과 남직원은 각 각 몇 명이나 있나요?
-select count(case when gender='M' then 1 end) as 남직원_수,
-count(case when gender='F' then 1 end) as 여직원_수
+select count(case when gender='M' then 1 end) as '남직원 수',
+count(case when gender='F' then 1 end) as '여직원 수'
 from employees;
 
 -- 문제4.
@@ -26,12 +26,12 @@ where to_date like '9999-01-01';
 
 -- 문제5.
 -- 부서는 총 몇 개가 있나요?
-select count(dept_no) as 부서_개수
+select count(dept_no) as '부서 개수'
 from departments;
 
 -- 문제6.
 -- 현재 부서 매니저는 몇 명이나 있나요?(역임 매너저는 제외)
-select count(emp_no) as 현직_매니저_수
+select count(emp_no) as '현직 매니저수'
 from dept_manager
 where to_date = '9999-01-01';
 
@@ -55,13 +55,13 @@ order by char_length(title) desc;
 
 -- 문제10
 -- 현재 Enginner 직책의 사원은 총 몇 명입니까?
-select count(emp_no) as 현직_엔지니어_수
+select count(emp_no) as '현직 엔지니어 수'
 from titles
 where title = 'Engineer' and to_date = '9999-01-01';
 
 -- 문제11
 -- 사번이 13250(Zeydy)인 지원이 직책 변경 상황을 시간순으로 출력해보세요.
-select *
+select emp_no as 사번, title as 직책, from_date, to_date
 from titles
 where emp_no = '13250'
 order by from_date;
