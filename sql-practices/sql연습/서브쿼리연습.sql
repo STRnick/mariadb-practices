@@ -91,5 +91,88 @@ and s.to_date = '9999-01-01'
 group by t.title
 order by avg(salary) asc limit 0, 1;
 
--- 3-2) 복수행 연산자:
--- 실습문제3: 현재 급여가 50000 이상인 직원의 이름을 급여가 큰 순서대로 출력하세요.
+-- 3-2) 복수행 연산자: in, not in, any, all
+-- any 사용법
+-- 1. =any : in
+-- 2. >any, >=any : 최소값
+-- 3. <any, <=any : 최대값
+-- 4. <>any : not in
+
+-- all 사용법
+-- 1. =all : x
+-- 2. >all, >=all : 최대값
+-- 3. <all, <=all : 최소값
+-- 4. <>all
+
+-- 실습문제3: 현재 급여가 50000 이상인 직원의 이름을 급여가 작은 순서대로 출력하세요.
+-- sol1)
+select concat(e.first_name, ' ', e.last_name) as '이름', s.salary as '급여'
+from employees e, salaries s
+where e.emp_no = s.emp_no
+and s.to_date = '9999-01-01'
+and s.salary >= '50000'
+order by s.salary asc;
+
+-- sol2)
+select concat(e.first_name, ' ', e.last_name) as '이름', s.salary as '급여'
+from employees e, salaries s
+where e.emp_no = s.emp_no
+and s.to_date = '9999-01-01'
+and (e.emp_no, s.salary) in (select emp_no, salary
+								from salaries
+								where to_date = '9999-01-01'
+								and salary >= '50000')
+order by s.salary asc;
+
+-- 실습문제4: 현재, 각 부서별로 최고 월급을 받는 직원의 이름과 월급을 출력하세요.
+-- my sol)
+select dp.dept_name as '부서명', concat(e.first_name, ' ', e.last_name) as '이름', s.salary as '급여'
+from employees e, salaries s, dept_emp d, departments dp
+where e.emp_no = s.emp_no
+and s.emp_no = d.emp_no
+and dp.dept_no = d.dept_no
+and d.to_date = '9999-01-01'
+and s.to_date = '9999-01-01'
+and (d.dept_no, s.salary) in (select dept_no, max(salary)
+								from dept_emp d, salaries s
+                                where d.emp_no = s.emp_no
+								and s.to_date = '9999-01-01'
+                                and d.to_date = '9999-01-01'
+                                group by dept_no)
+order by s.salary desc;
+
+-- sol1) where subquery: in(=any)
+select dp.dept_name, e.first_name, s.salary
+from dept_emp de, employees e, salaries s, departments dp
+where de.emp_no = e.emp_no
+and e.emp_no = s.emp_no
+and de.dept_no = dp.dept_no
+and de.to_date = '9999-01-01'
+and s.to_date = '9999-01-01'
+and (de.dept_no, s.salary) in (select a.dept_no, max(b.salary)
+								from dept_emp a, salaries b
+								where a.emp_no = b.emp_no
+								and a.to_date = '9999-01-01'
+								and b.to_date = '9999-01-01'
+								group by a.dept_no)
+order by s.salary desc; 
+                                
+-- sol2) from subquery
+select d.dept_name, b.first_name, c.salary
+  from dept_emp a,
+       employees b,
+       salaries c,
+       departments d,
+       (  select a.dept_no, max(b.salary) as max_salary
+		    from dept_emp a, salaries b
+           where a.emp_no=b.emp_no
+             and a.to_date='9999-01-01'
+             and b.to_date='9999-01-01'
+        group by a.dept_no) e
+ where a.emp_no = b.emp_no
+   and b.emp_no = c.emp_no
+   and d.dept_no = a.dept_no
+   and a.dept_no = e.dept_no   
+   and a.to_date = '9999-01-01'
+   and c.to_date = '9999-01-01'
+   and c.salary = e.max_salary;
