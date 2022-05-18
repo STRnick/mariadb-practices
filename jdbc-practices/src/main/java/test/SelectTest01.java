@@ -2,21 +2,26 @@ package test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
-public class InsertTest01 {
+public class SelectTest01 {
 
 	public static void main(String[] args) {
-		insert("cs");
-		insert("경영지원");
-		insert("인프라");
+		List<DepartmentVo> result = findAll();
+		for (DepartmentVo vo : result) {
+			System.out.println(vo);
+		}
 	}
 
-	public static boolean insert(String name) {
-		boolean result = false;
+	private static List<DepartmentVo> findAll() {
+		List<DepartmentVo> result = new ArrayList<>();
 		Connection connection = null;
 		Statement stmt = null;
+		ResultSet rs = null;
 
 		try {
 			// 1.JDBC Driver 로딩 (JDBC Class 로딩: class loader)
@@ -30,15 +35,32 @@ public class InsertTest01 {
 			stmt = connection.createStatement();
 
 			// 4. SQL 실행
-			String sql = "insert into department values(null, '" + name + "')"; // parameter mapping
-			int count = stmt.executeUpdate(sql);
-			result = count == 1;
+			String sql = "select no, name" + 
+						 " from department" + 
+						 " order by no desc";
+			rs = stmt.executeQuery(sql);
+
+			// 5. 결과처리
+			while (rs.next()) {
+				Long no = rs.getLong(1);
+				String name = rs.getString(2);
+
+				DepartmentVo vo = new DepartmentVo(); // result mapping
+				vo.setNo(no);
+				vo.setName(name);
+
+				result.add(vo);
+			}
+
 		} catch (ClassNotFoundException e) {
 			System.out.println("드라이버 로딩 실패: " + e);
 		} catch (SQLException e) {
 			System.out.println("드라이버 로딩 실패: " + e);
 		} finally {
 			try {
+				if (rs != null) {
+					rs.close();
+				}
 				if (stmt != null) {
 					stmt.close();
 				}

@@ -12,7 +12,7 @@ public class UpdateTest01 {
 		DepartmentVo vo = new DepartmentVo();
 		vo.setNo(4L);
 		vo.setName("기획");
-		
+
 		update(vo);
 	}
 
@@ -33,11 +33,10 @@ public class UpdateTest01 {
 			stmt = connection.createStatement();
 
 			// 4. SQL 실행
-			String sql = "update department"+ 
-						 " set name ='" + vo.getName() + "'" +
-						 " where no = " + vo.getNo();
+			String sql = "update department" + " set name ='" + vo.getName() + "'" + " where no = " + vo.getNo();
 			int count = stmt.executeUpdate(sql);
 			result = count == 1;
+
 		} catch (ClassNotFoundException e) {
 			System.out.println("드라이버 로딩 실패: " + e);
 		} catch (SQLException e) {
