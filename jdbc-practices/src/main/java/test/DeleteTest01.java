@@ -87,7 +87,6 @@ public class DeleteTest01 {
 				e.printStackTrace();
 			}
 		}
-
 		return result;
 	}
 }
