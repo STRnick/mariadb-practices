@@ -9,7 +9,26 @@ public class BookDaoTest {
 
 	public static void main(String[] args) {
 //		testInsert();
-		testFindAll();
+//		testFindAll();
+		testUpdate();
+	}
+	
+	private static void testUpdate() {
+		BookVo vo = new BookVo();
+		BookDao dao = new BookDao();
+		
+		vo.setNo(1L);
+		vo.setStateCode("대여중");
+		
+		dao.update(vo);
+		
+		// test 성공 여부
+		vo = dao.findByNo(1L);
+		if("대여중".equals(vo.getStateCode())) {
+			System.out.println("ok");
+		}
+		
+//		new BookDao().update(1L, "대여중");
 	}
 
 	private static void testFindAll() {
