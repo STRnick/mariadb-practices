@@ -8,21 +8,22 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import vo.CartVo;
+import vo.OrdersVo;
 
-public class CartDao {
-	public boolean insert(CartVo vo) {
+public class OrdersDao {
+	public boolean insert(OrdersVo vo) {
 		boolean result = false;
 		Connection connection = null;
 		PreparedStatement pstmt = null;
 
 		try {
 			connection = getConnection();
-			String sql = "insert into cart values(?, ?, ?)";
+			String sql = "insert into orders values(?, ?, ?, ?)";
 			pstmt = connection.prepareStatement(sql);
-			pstmt.setLong(1, vo.getCustomer_no());
-			pstmt.setLong(2, vo.getBook_no());
-			pstmt.setLong(3, vo.getCount());
+			pstmt.setString(1, vo.getNo());
+			pstmt.setLong(2, vo.getPayment());
+			pstmt.setString(3, vo.getAddress());
+			pstmt.setLong(4, vo.getMember_no());
 
 			int count = pstmt.executeUpdate();
 			result = count == 1;
@@ -44,9 +45,8 @@ public class CartDao {
 		return result;
 	}
 
-	
-	public List<CartVo> findAll() {
-		List<CartVo> result = new ArrayList<>();
+	public List<OrdersVo> findAll() {
+		List<OrdersVo> result = new ArrayList<>();
 		Connection connection = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -54,26 +54,27 @@ public class CartDao {
 		try {
 			connection = getConnection();
 
-			String sql = " select m.name, b.title, c.count" + 
-						 " from member m, book b, cart c" +
-						 " where m.no = c.customer_no" +
-						 " and b.no = c.book_no" +
-						 " group by b.title" +
-						 " order by count desc";
+			String sql = "select o.no, m.name, m.email, o.payment, o.address" + 
+						 " from member m, orders o" +
+						 " where m.no = o.member_no";
 			pstmt = connection.prepareStatement(sql);
 			rs = pstmt.executeQuery();
 
 			// 6. 결과처리
 			while (rs.next()) {
-				String member_name = rs.getString(1);
-				String book_title = rs.getString(2);
-				long count = rs.getLong(3);
-				
-				CartVo vo = new CartVo();
+				String orders_no = rs.getString(1);
+				String member_name = rs.getString(2);
+				String member_email = rs.getString(3);
+				int orders_payment = rs.getInt(4);
+				String orders_address = rs.getString(5);
+
+				OrdersVo vo = new OrdersVo();
+				vo.setNo(orders_no);
 				vo.setMember_name(member_name);
-				vo.setBook_title(book_title);
-				vo.setCount(count);
-				
+				vo.setMember_email(member_email);
+				vo.setPayment(orders_payment);
+				vo.setAddress(orders_address);
+
 				result.add(vo);
 			}
 		} catch (SQLException e) {
