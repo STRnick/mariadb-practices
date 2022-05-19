@@ -23,7 +23,9 @@ public class AuthorDao {
 			connection = DriverManager.getConnection(url, "webdb", "webdb");
 
 			// 3. SQL 준비
-			String sql = " insert" + "   into author" + " values(null, ?)";
+			String sql = " insert" + 
+						 " into author" +
+						 " values(null, ?)";
 			pstmt = connection.prepareStatement(sql);
 
 			// 4.Mapping(bind)
