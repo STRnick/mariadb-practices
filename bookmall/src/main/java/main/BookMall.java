@@ -21,9 +21,16 @@ public class BookMall {
 		bookFindAll();
 		cartFindAll();
 		orderFindAll();
+		bookOrderfindAll();
 	}
 
+	
+	
 	private static void memberFindAll() {
+		new MemberDao().DeleteAll();	
+		new MemberDao().insert("둘리", "010-0000-0000", "둘리@gmail.com", "123456");
+		new MemberDao().insert("도우너", "010-7777-7777", "도우너@gmail.com", "999999");
+		
 		List<MemberVo> list = new MemberDao().findAll();
 		System.out.println("========================");
 		for (MemberVo vo : list) {
@@ -63,4 +70,12 @@ public class BookMall {
 		}
 		System.out.println("========================");
 	}
+	
+	private static void bookOrderfindAll() {
+		List<BookVo> list = new BookDao().bookOrderfindAll();
+		for (BookVo vo : list) {
+			System.out.println(vo.getNo() + " " + vo.getTitle() + " " + vo.getCount() + " " + vo.getPrice());
+		}
+	}	
+	
 }

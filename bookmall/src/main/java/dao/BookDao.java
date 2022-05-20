@@ -98,6 +98,56 @@ public class BookDao {
 
 		return result;
 	}
+	
+	public List<BookVo> bookOrderfindAll() {
+		List<BookVo> result = new ArrayList<>();
+		Connection connection = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			connection = getConnection();
+
+			String sql =  "select b.no, b.title, c.count, (b.price*c.count)"
+					 + " from book b, cart c"
+				     + " where b.no = c.book_no";
+			pstmt = connection.prepareStatement(sql);			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				long no = rs.getLong(1);
+				String title = rs.getString(2);
+				long cart_count = rs.getLong(3);
+				long price = rs.getLong(4);
+				
+				BookVo vo = new BookVo();
+				vo.setNo(no);
+				vo.setTitle(title);
+				vo.setCount(cart_count);
+				vo.setPrice(price);
+				
+				result.add(vo);
+			}
+		} catch (SQLException e) {
+			System.out.println("드라이버 로딩 실패:" + e);
+		} finally {
+			try {
+				if(rs != null) {
+					rs.close();
+				}
+				if(pstmt != null) {
+					pstmt.close();
+				}
+				if(connection != null) {
+					connection.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return result;		
+	}
 
 	private Connection getConnection() throws SQLException {
 		Connection connection = null;

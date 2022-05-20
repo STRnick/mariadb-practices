@@ -6,6 +6,7 @@ public class BookVo {
 	private Long price;
 	private Long category_no;
 	private String category_genre;
+	private Long cart_count;
 
 	public Long getNo() {
 		return no;
@@ -31,6 +32,14 @@ public class BookVo {
 		this.price = price;
 	}
 
+	public Long getCount() {
+		return cart_count;
+	}
+
+	public void setCount(Long cart_count) {
+		this.cart_count = cart_count;
+	}
+
 	public Long getCategory_no() {
 		return category_no;
 	}
@@ -49,7 +58,8 @@ public class BookVo {
 
 	@Override
 	public String toString() {
-		return no + " " + title + " " + price + " " + category_genre;
+		return "BookVo [no=" + no + ", title=" + title + ", price=" + price + ", category_no=" + category_no
+				+ ", category_genre=" + category_genre + ", cart_count=" + cart_count + "]";
 	}
 
 }

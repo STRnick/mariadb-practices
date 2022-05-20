@@ -60,6 +60,45 @@ public class MemberDao {
 		return result;
 	}
 	
+	public void insert(String name, String tell, String email, String password) {
+		MemberVo vo = new MemberVo();
+		vo.setName(name);
+		vo.setTell(tell);
+		vo.setEmail(email);
+		vo.setPassword(password);
+		
+		insert(vo);
+	}
+	
+	public boolean DeleteAll() {
+		boolean result = false;
+		Connection connecion = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			connecion = getConnection();
+			
+			String sql = "delete from member";
+			pstmt = connecion.prepareStatement(sql);
+					
+			int count =pstmt.executeUpdate();
+			result = count == 1;
+				
+		}  catch (SQLException e) {
+			System.out.println("드라이버 로딩 실패:" + e);
+		} finally {
+			try {
+				if(pstmt != null)
+					pstmt.close();
+				if(connecion != null)
+					connecion.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+	
 	public boolean insert(MemberVo vo) {
 		boolean result = false;
 		Connection connection = null;

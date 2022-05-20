@@ -8,14 +8,22 @@ import vo.BookVo;
 public class BookDaoTest {
 
 	public static void main(String[] args) {
-		testInsert();
-		testFindAll();
+//		testInsert();
+//		testFindAll();
+		testbookOrderfindAll();
 	}
 
 	private static void testFindAll() {
 		List<BookVo> list = new BookDao().findAll();
 		for (BookVo vo : list) {
 			System.out.println(vo);
+		}
+	}
+	
+	private static void testbookOrderfindAll() {
+		List<BookVo> list = new BookDao().bookOrderfindAll();
+		for (BookVo vo : list) {
+			System.out.println(vo.getNo() + " " + vo.getTitle() + " " + vo.getCount() + " " + vo.getPrice());
 		}
 	}
 
