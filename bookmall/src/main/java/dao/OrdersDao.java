@@ -8,9 +8,21 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import vo.MemberVo;
 import vo.OrdersVo;
 
 public class OrdersDao {
+
+	public void insert(String no, int payment, String address, Long member_no) {
+		OrdersVo vo = new OrdersVo();
+		vo.setNo(no);
+		vo.setPayment(payment);
+		vo.setAddress(address);
+		vo.setMember_no(member_no);
+
+		insert(vo);
+	}
+
 	public boolean insert(OrdersVo vo) {
 		boolean result = false;
 		Connection connection = null;
@@ -54,9 +66,8 @@ public class OrdersDao {
 		try {
 			connection = getConnection();
 
-			String sql = "select o.no, m.name, m.email, o.payment, o.address" + 
-						 " from member m, orders o" +
-						 " where m.no = o.member_no";
+			String sql = "select o.no, m.name, m.email, o.payment, o.address" + " from member m, orders o"
+					+ " where m.no = o.member_no";
 			pstmt = connection.prepareStatement(sql);
 			rs = pstmt.executeQuery();
 
@@ -95,6 +106,64 @@ public class OrdersDao {
 			}
 		}
 
+		return result;
+	}
+
+	public boolean deleteAll() {
+		boolean result = false;
+		Connection connecion = null;
+		PreparedStatement pstmt = null;
+
+		try {
+			connecion = getConnection();
+
+			String sql = "delete from orders";
+			pstmt = connecion.prepareStatement(sql);
+
+			int count = pstmt.executeUpdate();
+			result = count == 1;
+
+		} catch (SQLException e) {
+			System.out.println("드라이버 로딩 실패:" + e);
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (connecion != null)
+					connecion.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+
+	public boolean autoIncrementRestore() {
+		boolean result = false;
+		Connection connecion = null;
+		PreparedStatement pstmt = null;
+
+		try {
+			connecion = getConnection();
+
+			String sql = "alter table orders auto_increment = 1";
+			pstmt = connecion.prepareStatement(sql);
+
+			int count = pstmt.executeUpdate();
+			result = count == 1;
+
+		} catch (SQLException e) {
+			System.out.println("드라이버 로딩 실패:" + e);
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (connecion != null)
+					connecion.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 		return result;
 	}
 

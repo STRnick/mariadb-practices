@@ -49,7 +49,7 @@ public class CartVo {
 
 	@Override
 	public String toString() {
-		return member_name + " " + book_title + " "+ count;
+		return member_name + " " + book_title + " " + count;
 	}
 
 }

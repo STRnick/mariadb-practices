@@ -9,9 +9,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vo.CategoryVo;
+import vo.MemberVo;
 
 public class CategoryDao {
 
+	public void insert(String genre) {
+		CategoryVo vo = new CategoryVo();
+		vo.setGenre(genre);
+
+		insert(vo);
+	}
+	
 	public boolean insert(CategoryVo vo) {
 		boolean result = false;
 		Connection connection = null;
@@ -43,7 +51,6 @@ public class CategoryDao {
 		return result;
 	}
 
-	
 	public List<CategoryVo> findAll() {
 		List<CategoryVo> result = new ArrayList<>();
 		Connection connection = null;
@@ -53,8 +60,7 @@ public class CategoryDao {
 		try {
 			connection = getConnection();
 
-			String sql = " select no, genre" + 
-						 " from category";
+			String sql = " select no, genre" + " from category";
 			pstmt = connection.prepareStatement(sql);
 			rs = pstmt.executeQuery();
 
@@ -87,6 +93,64 @@ public class CategoryDao {
 			}
 		}
 
+		return result;
+	}
+
+	public boolean deleteAll() {
+		boolean result = false;
+		Connection connecion = null;
+		PreparedStatement pstmt = null;
+
+		try {
+			connecion = getConnection();
+
+			String sql = "delete from category";
+			pstmt = connecion.prepareStatement(sql);
+
+			int count = pstmt.executeUpdate();
+			result = count == 1;
+
+		} catch (SQLException e) {
+			System.out.println("드라이버 로딩 실패:" + e);
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (connecion != null)
+					connecion.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+
+	public boolean autoIncrementRestore() {
+		boolean result = false;
+		Connection connecion = null;
+		PreparedStatement pstmt = null;
+
+		try {
+			connecion = getConnection();
+
+			String sql = "alter table category auto_increment = 1";
+			pstmt = connecion.prepareStatement(sql);
+
+			int count = pstmt.executeUpdate();
+			result = count == 1;
+
+		} catch (SQLException e) {
+			System.out.println("드라이버 로딩 실패:" + e);
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (connecion != null)
+					connecion.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 		return result;
 	}
 

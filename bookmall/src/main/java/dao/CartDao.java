@@ -11,6 +11,16 @@ import java.util.List;
 import vo.CartVo;
 
 public class CartDao {
+	
+	public void insert(Long customer_no, Long book_no, Long count) {
+		CartVo vo = new CartVo();
+		vo.setCustomer_no(customer_no);
+		vo.setBook_no(book_no);
+		vo.setCount(count);
+
+		insert(vo);
+	}
+
 	public boolean insert(CartVo vo) {
 		boolean result = false;
 		Connection connection = null;
@@ -44,7 +54,6 @@ public class CartDao {
 		return result;
 	}
 
-	
 	public List<CartVo> findAll() {
 		List<CartVo> result = new ArrayList<>();
 		Connection connection = null;
@@ -54,12 +63,9 @@ public class CartDao {
 		try {
 			connection = getConnection();
 
-			String sql = " select m.name, b.title, c.count" + 
-						 " from member m, book b, cart c" +
-						 " where m.no = c.customer_no" +
-						 " and b.no = c.book_no" +
-						 " group by b.title" +
-						 " order by count desc";
+			String sql = " select m.name, b.title, c.count" + " from member m, book b, cart c"
+					+ " where m.no = c.customer_no" + " and b.no = c.book_no" + " group by b.title"
+					+ " order by count desc";
 			pstmt = connection.prepareStatement(sql);
 			rs = pstmt.executeQuery();
 
@@ -68,12 +74,12 @@ public class CartDao {
 				String member_name = rs.getString(1);
 				String book_title = rs.getString(2);
 				long count = rs.getLong(3);
-				
+
 				CartVo vo = new CartVo();
 				vo.setMember_name(member_name);
 				vo.setBook_title(book_title);
 				vo.setCount(count);
-				
+
 				result.add(vo);
 			}
 		} catch (SQLException e) {
@@ -94,6 +100,64 @@ public class CartDao {
 			}
 		}
 
+		return result;
+	}
+
+	public boolean deleteAll() {
+		boolean result = false;
+		Connection connecion = null;
+		PreparedStatement pstmt = null;
+
+		try {
+			connecion = getConnection();
+
+			String sql = "delete from cart";
+			pstmt = connecion.prepareStatement(sql);
+
+			int count = pstmt.executeUpdate();
+			result = count == 1;
+
+		} catch (SQLException e) {
+			System.out.println("드라이버 로딩 실패:" + e);
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (connecion != null)
+					connecion.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+
+	public boolean autoIncrementRestore() {
+		boolean result = false;
+		Connection connecion = null;
+		PreparedStatement pstmt = null;
+
+		try {
+			connecion = getConnection();
+
+			String sql = "alter table cart auto_increment = 1";
+			pstmt = connecion.prepareStatement(sql);
+
+			int count = pstmt.executeUpdate();
+			result = count == 1;
+
+		} catch (SQLException e) {
+			System.out.println("드라이버 로딩 실패:" + e);
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (connecion != null)
+					connecion.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 		return result;
 	}
 

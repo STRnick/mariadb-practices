@@ -13,6 +13,15 @@ import vo.CategoryVo;
 
 public class BookDao {
 	
+	public void insert(String title, Long price, Long category_no) {
+		BookVo vo = new BookVo();
+		vo.setTitle(title);
+		vo.setPrice(price);
+		vo.setCategory_no(category_no);
+
+		insert(vo);
+	}
+
 	public boolean insert(BookVo vo) {
 		boolean result = false;
 		Connection connection = null;
@@ -46,7 +55,6 @@ public class BookDao {
 		return result;
 	}
 
-	
 	public List<BookVo> findAll() {
 		List<BookVo> result = new ArrayList<>();
 		Connection connection = null;
@@ -56,10 +64,8 @@ public class BookDao {
 		try {
 			connection = getConnection();
 
-			String sql = " select b.no, b.title, b.price, c.genre" + 
-						 " from book b, category c" +
-						 " where b.category_no = c.no" +
-						 " order by b.no";
+			String sql = " select b.no, b.title, b.price, c.genre" + " from book b, category c"
+					+ " where b.category_no = c.no" + " order by b.no";
 			pstmt = connection.prepareStatement(sql);
 			rs = pstmt.executeQuery();
 
@@ -69,7 +75,7 @@ public class BookDao {
 				String title = rs.getString(2);
 				Long price = rs.getLong(3);
 				String category_genre = rs.getString(4);
-				
+
 				BookVo vo = new BookVo();
 				vo.setNo(no);
 				vo.setTitle(title);
@@ -98,55 +104,112 @@ public class BookDao {
 
 		return result;
 	}
-	
+
 	public List<BookVo> bookOrderfindAll() {
 		List<BookVo> result = new ArrayList<>();
 		Connection connection = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		
+
 		try {
 			connection = getConnection();
 
-			String sql =  "select b.no, b.title, c.count, (b.price*c.count)"
-					 + " from book b, cart c"
-				     + " where b.no = c.book_no";
-			pstmt = connection.prepareStatement(sql);			
+			String sql = "select b.no, b.title, c.count, (b.price*c.count)" + " from book b, cart c"
+					+ " where b.no = c.book_no";
+			pstmt = connection.prepareStatement(sql);
 			rs = pstmt.executeQuery();
-			
-			while(rs.next()) {
+
+			while (rs.next()) {
 				long no = rs.getLong(1);
 				String title = rs.getString(2);
 				long cart_count = rs.getLong(3);
 				long price = rs.getLong(4);
-				
+
 				BookVo vo = new BookVo();
 				vo.setNo(no);
 				vo.setTitle(title);
 				vo.setCount(cart_count);
 				vo.setPrice(price);
-				
+
 				result.add(vo);
 			}
 		} catch (SQLException e) {
 			System.out.println("드라이버 로딩 실패:" + e);
 		} finally {
 			try {
-				if(rs != null) {
+				if (rs != null) {
 					rs.close();
 				}
-				if(pstmt != null) {
+				if (pstmt != null) {
 					pstmt.close();
 				}
-				if(connection != null) {
+				if (connection != null) {
 					connection.close();
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
-		
-		return result;		
+
+		return result;
+	}
+
+	public boolean deleteAll() {
+		boolean result = false;
+		Connection connecion = null;
+		PreparedStatement pstmt = null;
+
+		try {
+			connecion = getConnection();
+
+			String sql = "delete from book";
+			pstmt = connecion.prepareStatement(sql);
+
+			int count = pstmt.executeUpdate();
+			result = count == 1;
+
+		} catch (SQLException e) {
+			System.out.println("드라이버 로딩 실패:" + e);
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (connecion != null)
+					connecion.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+
+	public boolean autoIncrementRestore() {
+		boolean result = false;
+		Connection connecion = null;
+		PreparedStatement pstmt = null;
+
+		try {
+			connecion = getConnection();
+
+			String sql = "alter table book auto_increment = 1";
+			pstmt = connecion.prepareStatement(sql);
+
+			int count = pstmt.executeUpdate();
+			result = count == 1;
+
+		} catch (SQLException e) {
+			System.out.println("드라이버 로딩 실패:" + e);
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (connecion != null)
+					connecion.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
 	}
 
 	private Connection getConnection() throws SQLException {

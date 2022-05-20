@@ -25,5 +25,4 @@ public class CategoryVo {
 		return no + " " + genre;
 	}
 
-	
 }
